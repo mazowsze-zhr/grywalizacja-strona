@@ -25,10 +25,28 @@ test('both seasons build from one config; a rebuild removes previous seasonal as
       assert.equal(assets.includes('mayflower-ship.png'), season === 'summer');
       assert.equal(assets.includes('skier.gif'), season === 'winter');
       assert.equal((await readdir(directory)).includes('hal'), false);
-      const js = await readFile(join(directory, 'config.js'), 'utf8');
-      const result = JSON.parse(js.replace(/^export default /, '').replace(/;\s*$/, ''));
+      const result = JSON.parse(html.match(/<script id="site-config" type="application\/json">(.*?)<\/script>/s)[1]);
       assert.deepEqual(result, { ...config, season });
+      assert.equal((await readdir(directory)).includes('config.js'), false);
+      const appFile = html.match(/<script type="module" src="\/(app\.[a-f0-9]+\.js)">/)[1];
+      const js = await readFile(join(directory, appFile), 'utf8');
+      assert.match(js, /querySelector\('#site-config'\)/);
+      assert.doesNotMatch(js, /import config/);
+      const dataFile = js.match(/from '\.\/(data\.[a-f0-9]+\.js)'/)[1];
+      assert.ok((await readFile(join(directory, dataFile), 'utf8')).length > 0);
     }
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});
+
+test('embedded settings cannot break out of the JSON script element', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'grywalizacja-escape-'));
+  try {
+    const sheetName = '</script><script>alert(1)</script>';
+    await build({ ...config, sheetName }, directory);
+    const html = await readFile(join(directory, 'index.html'), 'utf8');
+    assert.ok(!html.includes(sheetName));
+    const embedded = JSON.parse(html.match(/<script id="site-config" type="application\/json">(.*?)<\/script>/s)[1]);
+    assert.equal(embedded.sheetName, sheetName);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
 

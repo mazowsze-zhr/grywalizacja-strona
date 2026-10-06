@@ -1,6 +1,7 @@
 import { readFile, mkdir, cp, writeFile, rm } from 'node:fs/promises';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const fields = ['season', 'year', 'spreadsheetId', 'sheetName', 'range', 'totalTasks', 'refreshSeconds'];
@@ -45,9 +46,20 @@ export async function build(configInput, destination = join(root, 'dist')) {
   const config = validateConfig(configInput);
   const summer = config.season === 'summer';
   const edition = `${summer ? 'HAL' : 'HAZ'} ${config.year}`;
+  const filename = (name, content, extension) => `${name}.${createHash('sha256').update(content).digest('hex').slice(0, 16)}.${extension}`;
+  const dataSource = await readFile(join(root, 'src/data.js'), 'utf8');
+  const dataFile = filename('data', dataSource, 'js');
+  const appSource = (await readFile(join(root, 'src/app.js'), 'utf8')).replace("'./data.js'", `'./${dataFile}'`);
+  const appFile = filename('app', appSource, 'js');
+  const stylesSource = await readFile(join(root, 'src/styles.css'), 'utf8');
+  const stylesFile = filename('styles', stylesSource, 'css');
   const format = new Intl.NumberFormat('pl-PL', { maximumFractionDigits: 2 });
   const scale = ['Start', ...[.25, .5, .75].map(fraction => format.format(config.totalTasks * fraction)), `${summer ? 'Port' : 'Meta'} · ${config.totalTasks}`];
   const values = {
+    APP_FILE: appFile,
+    STYLES_FILE: stylesFile,
+    // Escape '<' to prevent a sheet name containing '</script>' from closing the JSON block.
+    PUBLIC_CONFIG: JSON.stringify(config).replace(/</g, '\\u003c'),
     THEME_COLOR: summer ? '#215f54' : '#07566a',
     EDITION: edition,
     FAVICON: summer ? '/assets/mayflower-ship.png' : '/favicon.svg',
@@ -63,7 +75,7 @@ export async function build(configInput, destination = join(root, 'dist')) {
     ASSET_CREDIT: summer ? '<small class="credits">Ikona statku: <a href="https://www.flaticon.com/authors/umeicon">Umeicon</a> / <a href="https://www.flaticon.com/free-icon/mayflower-ship_8823135">Flaticon</a></small>' : ''
   };
   const template = await readFile(join(root, 'src/index.html'), 'utf8');
-  const raw = new Set(['BRAND_MARK', 'SCALE', 'ASSET_CREDIT']);
+  const raw = new Set(['BRAND_MARK', 'SCALE', 'ASSET_CREDIT', 'PUBLIC_CONFIG']);
   const html = template.replace(/\{\{([A-Z_]+)\}\}/g, (_, key) => {
     if (!(key in values)) throw new Error(`Nieznane pole szablonu: ${key}`);
     return raw.has(key) ? values[key] : escapeHtml(values[key]);
@@ -71,11 +83,10 @@ export async function build(configInput, destination = join(root, 'dist')) {
   // Recreate the output so a previous deployment's season or assets cannot leak in.
   await rm(destination, { recursive: true, force: true });
   await mkdir(join(destination, 'assets'), { recursive: true });
-  for (const file of ['app.js', 'data.js', 'styles.css', 'favicon.svg']) await cp(join(root, 'src', file), join(destination, file));
+  await cp(join(root, 'src/favicon.svg'), join(destination, 'favicon.svg'));
+  for (const [file, content] of [[appFile, appSource], [dataFile, dataSource], [stylesFile, stylesSource]]) await writeFile(join(destination, file), content);
   for (const file of ['background4.jpg', summer ? 'mayflower-ship.png' : 'skier.gif']) await cp(join(root, 'src/assets', file), join(destination, 'assets', file));
   await writeFile(join(destination, 'index.html'), html);
-  // Only the validated, explicitly allowed public settings are included.
-  await writeFile(join(destination, 'config.js'), `export default ${JSON.stringify(config, null, 2)};\n`);
   return { edition, destination };
 }
 

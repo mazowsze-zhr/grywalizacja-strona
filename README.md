@@ -58,7 +58,7 @@ Identyfikator to część adresu pomiędzy `/d/` a `/edit`, np. `https://docs.go
 | `totalTasks` | Liczba zadań do mety/portu. Skala i pozycje aktualizują się automatycznie. |
 | `refreshSeconds` | Odstęp odświeżania w sekundach, co najmniej `30`. |
 
-`site.config.json` jest lokalny i pomijany przez Git. Po sklonowaniu na innym komputerze trzeba go utworzyć ponownie. Do konfiguracji wpisuj wyłącznie dane publiczne — ustawienia trafiają do przeglądarki jako `config.js`. Nie wpisuj haseł ani kluczy API; nieznane pola zatrzymują budowanie.
+`site.config.json` jest lokalny i pomijany przez Git. Po sklonowaniu na innym komputerze trzeba go utworzyć ponownie. Do konfiguracji wpisuj wyłącznie dane publiczne — ustawienia trafiają do przeglądarki w bloku JSON wewnątrz HTML. Nagłówek i grafiki korzystają dzięki temu z tej samej konfiguracji, a nazwy plików JS/CSS zawierają skrót ich zawartości, aby odróżniać wersje w pamięci podręcznej. Nie wpisuj haseł ani kluczy API; nieznane pola zatrzymują budowanie.
 
 Uruchom:
 

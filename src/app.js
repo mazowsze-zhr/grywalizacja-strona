@@ -1,5 +1,6 @@
 import { sheetUrl, parseSheet, ranked, progress } from './data.js';
-import config from './config.js';
+// Read settings from the same document as the title and seasonal copy.
+const config = JSON.parse(document.querySelector('#site-config').textContent);
 
 const TOTAL_TASKS = config.totalTasks;
 
