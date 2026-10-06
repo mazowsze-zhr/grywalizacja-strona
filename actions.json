@@ -1,0 +1,23 @@
+{
+  "refreshSeconds": 60,
+  "actions": [
+    {
+      "id": "haz27",
+      "season": "winter",
+      "year": 2027,
+      "spreadsheetId": "1GV7dlxBDa7KHPjcirhwnv4hlmwjuq679IrRG5_HJsSM",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    },
+    {
+      "id": "hal26",
+      "season": "summer",
+      "year": 2026,
+      "spreadsheetId": "1XgWKVQ537wVpU1Qk14TACRsFM0pQBYGVrhzCFJMfAdE",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    }
+  ]
+}

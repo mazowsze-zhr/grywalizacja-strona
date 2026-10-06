@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Punktacja wyjazdów Mazowsze ZHR — wariant zimowy HAZ i letni HAL wybierany przy wdrożeniu.",
-  "engines": { "node": ">=22" },
+  "description": "Grywalizacja Mazowsze ZHR — aktualna akcja i archiwum HAZ/HAL pod jednym adresem.",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "start": "npm run build && node scripts/serve.mjs",

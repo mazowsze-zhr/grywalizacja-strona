@@ -10,7 +10,7 @@ const server = createServer(async (req, res) => {
   try {
     if (!['GET', 'HEAD'].includes(req.method)) { res.writeHead(405); res.end(); return; }
     const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-    if (pathname === '/hal' || pathname === '/hal/') { res.writeHead(302, { Location: '/' }); res.end(); return; }
+    if (pathname === '/hal' || pathname === '/hal/') { res.writeHead(302, { Location: '/akcje/hal26/' }); res.end(); return; }
     let path = resolve(root, `.${pathname}`);
     if (path !== root && !path.startsWith(root + sep)) { res.writeHead(403); res.end(); return; }
     if ((await stat(path)).isDirectory()) path = resolve(path, 'index.html');

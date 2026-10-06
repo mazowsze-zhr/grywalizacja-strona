@@ -55,6 +55,12 @@ tr:last-child td { border-bottom: 0; }
 footer { text-align: center; padding: 4px 20px 26px; font-size: 11px; line-height: 1.8; color: #648087; }
 footer span { margin: 0 10px; }
 .header-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; }
+.actions-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+.actions-nav a { display: flex; align-items: center; gap: 12px; padding: 11px 15px; border: 1px solid #cbdedd; border-radius: 7px; background: #ffffffa8; color: #365d62; font-size: 14px; font-weight: 700; text-decoration: none; }
+.actions-nav a span { font-size: 10px; font-weight: 400; }
+.actions-nav a:hover { background: white; border-color: #669b9e; }
+.actions-nav a[aria-current="page"] { background: #07566a; border-color: #07566a; color: white; }
+body[data-season="summer"] .actions-nav a[aria-current="page"] { background: #215f54; border-color: #215f54; }
 a:focus-visible { outline: 3px solid #d89b2b; outline-offset: 3px; }
 .credits { display: block; margin-top: 8px; }
 .credits a { color: #386b69; text-underline-offset: 3px; }

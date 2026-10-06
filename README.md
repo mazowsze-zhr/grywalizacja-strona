@@ -1,159 +1,151 @@
 # Grywalizacja wyjazdów — Mazowsze ZHR
 
-Strona z rankingiem okręgoleonów i postępem przygotowań do wyjazdów. Dane pochodzą z Google Sheets. Administrator wybiera jeden wariant podczas przygotowania wdrożenia:
+**Strona: https://grywalizacja.web.app**
 
-- `winter` — **HAZ**, narciarze i zimowa kolorystyka;
-- `summer` — **HAL**, statki płynące w prawo i letnia kolorystyka.
+Jeden stały adres z aktualną akcją i poprzednimi edycjami. Strona główna automatycznie pokazuje najnowszą skonfigurowaną akcję. Poprzednie można wybrać nad rankingiem.
 
-Na stronie nie ma przełącznika sezonów. Sezon, rok i źródło punktacji ustawia osoba publikująca stronę. Zmiana wymaga ponownego wdrożenia. Wszystkie warianty korzystają z tego samego kodu.
+Obecnie:
+
+| Akcja | Wariant | Adres |
+| --- | --- | --- |
+| HAZ27 | zimowy, narciarze | [Strona główna](https://grywalizacja.web.app/) lub [/akcje/haz27/](https://grywalizacja.web.app/akcje/haz27/) |
+| HAL26 | letni, statki | [/akcje/hal26/](https://grywalizacja.web.app/akcje/hal26/) |
+
+Każda akcja ma osobny arkusz, rok, sezon i liczbę zadań. Zmiana akcji otwiera jej własną stronę; konfiguracja i dane nie mieszają się między akcjami. Sezon wynika z ustawień akcji, a użytkownik wybiera edycję, nie dowolną skórkę.
+
+Najnowsza akcja jest wyznaczana według roku, a w tym samym roku HAL następuje po HAZ. Kolejność wpisów w pliku nie ma znaczenia. Dodanie HAL27 sprawi więc, że domyślnie wyświetli się HAL27, a HAZ27 pozostanie w archiwum. Stałe odnośniki `/akcje/<id>/` nie zmieniają znaczenia po dodaniu kolejnych edycji.
 
 ## Autorzy i pochodzenie
 
 Projekt powstał na podstawie **[pawelmarczuk/okret-haz25](https://github.com/pawelmarczuk/okret-haz25/)** autorstwa **Pawła Marczuka**. Dziękujemy za pierwotny pomysł, stronę PHP, zasady rankingu oraz grafiki narciarza i wody.
 
-Ta wersja rozwija projekt dla [Mazowsze ZHR](https://github.com/mazowsze-zhr): przenosi wyświetlanie do przeglądarki, odświeża interfejs i dodaje konfigurację wdrożenia oraz wariant letni. Podziękowanie dla oryginalnego projektu jest również w stopce strony.
-
-Ikonę statku **Mayflower ship** stworzył [Umeicon](https://www.flaticon.com/authors/umeicon); pochodzi z [Flaticon](https://www.flaticon.com/free-icon/mayflower-ship_8823135). Darmowe użycie wymaga oznaczenia autora — stopka wariantu letniego zawiera odpowiednie linki. Szczegóły w [ASSET-LICENSES.md](ASSET-LICENSES.md). Pliki graficzne zachowują własne warunki użycia; repozytorium nie nadaje im nowej licencji.
-
-## Wymagania
-
-- **Node.js 22 lub nowszy** z npm.
-- Git oraz dostęp do tego repozytorium.
-- Do publikacji: konto Google z dostępem do projektu Firebase i [Firebase CLI](https://firebase.google.com/docs/cli).
-- Arkusz Google dostępny do odczytu dla **każdego z linkiem**.
-
-Nie są potrzebne PHP, React, baza danych ani klucz Google Sheets API. Aplikacja używa HTML, CSS i JavaScriptu oraz publicznego interfejsu Google Visualization. Skrypty budowania i testy korzystają wyłącznie z Node.js; nie ma zależności npm do instalowania dla samej aplikacji.
+Rozwijany dla [Mazowsze ZHR](https://github.com/mazowsze-zhr). Podziękowanie jest również w stopce strony. Ikonę statku [Mayflower ship](https://www.flaticon.com/free-icon/mayflower-ship_8823135) stworzył [Umeicon](https://www.flaticon.com/authors/umeicon) z Flaticon. Jej darmowe użycie wymaga podpisu — jest automatycznie dodawany do stron letnich. Szczegóły: [ASSET-LICENSES.md](ASSET-LICENSES.md). Grafiki zachowują własne warunki użycia; repozytorium nie nadaje im nowej licencji.
 
 ## Pierwsze uruchomienie
+
+Wymagania: **Node.js 22+**, npm i Git. Do wdrażania potrzebne są Firebase CLI oraz dostęp do projektu Firebase. PHP, React, baza danych i klucz Google Sheets API nie są potrzebne. Aplikacja nie ma zależności npm do instalowania.
 
 ```sh
 git clone https://github.com/mazowsze-zhr/grywalizacja-strona.git
 cd grywalizacja-strona
-cp site.config.example.json site.config.json
-```
-
-Edytuj `site.config.json` i wpisz właściwy identyfikator arkusza:
-
-```json
-{
-  "season": "winter",
-  "year": 2027,
-  "spreadsheetId": "WKLEJ_ID_ARKUSZA",
-  "sheetName": "Punktacja",
-  "range": "B2:E",
-  "totalTasks": 12,
-  "refreshSeconds": 60
-}
-```
-
-Identyfikator to część adresu pomiędzy `/d/` a `/edit`, np. `https://docs.google.com/spreadsheets/d/IDENTYFIKATOR/edit`. Nie wklejaj całego URL.
-
-| Ustawienie | Znaczenie |
-| --- | --- |
-| `season` | `winter` dla HAZ lub `summer` dla HAL. |
-| `year` | Rok w tytule i nagłówku, np. `2027`. |
-| `spreadsheetId` | Identyfikator publicznie udostępnionego arkusza. |
-| `sheetName` | Dokładna nazwa zakładki, np. `Punktacja`. |
-| `range` | Zakres danych bez nagłówka, np. `B2:E`. |
-| `totalTasks` | Liczba zadań do mety/portu. Skala i pozycje aktualizują się automatycznie. |
-| `refreshSeconds` | Odstęp odświeżania w sekundach, co najmniej `30`. |
-
-`site.config.json` jest lokalny i pomijany przez Git. Po sklonowaniu na innym komputerze trzeba go utworzyć ponownie. Do konfiguracji wpisuj wyłącznie dane publiczne — ustawienia trafiają do przeglądarki w bloku JSON wewnątrz HTML. Nagłówek i grafiki korzystają dzięki temu z tej samej konfiguracji, a nazwy plików JS/CSS zawierają skrót ich zawartości, aby odróżniać wersje w pamięci podręcznej. Nie wpisuj haseł ani kluczy API; nieznane pola zatrzymują budowanie.
-
-Uruchom:
-
-```sh
 npm test
 npm start
 ```
 
-Otwórz **http://127.0.0.1:8081**. `npm start` najpierw buduje stronę, potem uruchamia lokalny serwer. Po zmianie kodu lub ustawień zatrzymaj go przez Ctrl+C i uruchom ponownie. Jeśli port jest zajęty: `PORT=8082 npm start` (macOS/Linux).
+Otwórz **http://127.0.0.1:8081**. Konfiguracja aktualnych akcji jest już w [actions.json](actions.json), więc po sklonowaniu niczego nie trzeba kopiować ani uzupełniać, żeby zobaczyć stronę.
 
-## Przygotowanie arkusza
+`npm start` buduje stronę i uruchamia lokalny serwer. Po edycji kodu lub konfiguracji zatrzymaj serwer przez Ctrl+C i uruchom ponownie. Inny port: `PORT=8082 npm start` (macOS/Linux).
 
-Dla domyślnego zakresu `B2:E`:
+## Dodanie następnej akcji
+
+Można poprosić o to w czacie, przekazując nazwę akcji i link do arkusza. Osoba wykonująca zmianę powinna:
+
+1. Dodać wpis do tablicy `actions` w `actions.json` — zachowując poprzednie wpisy.
+2. Sprawdzić właściwą zakładkę punktacji oraz układ kolumn (zakładka wskazana przez `gid` w linku nie zawsze zawiera punktację).
+3. Uruchomić testy i sprawdzić podgląd.
+4. Wysłać zmiany do tego repozytorium i opublikować stronę na Firebase.
+
+Przykład pojedynczego wpisu dla przyszłej akcji:
+
+```json
+{
+  "id": "hal27",
+  "season": "summer",
+  "year": 2027,
+  "spreadsheetId": "IDENTYFIKATOR_NOWEGO_ARKUSZA",
+  "sheetName": "Punktacja",
+  "range": "B2:E",
+  "totalTasks": 12
+}
+```
+
+| Pole | Znaczenie |
+| --- | --- |
+| `id` | Unikalny, trwały identyfikator w adresie strony, np. `haz27`. Nie zmieniaj go w istniejących akcjach. |
+| `season` | `winter` = HAZ i narciarze; `summer` = HAL i statki. |
+| `year` | Rok akcji, decydujący również o kolejności. |
+| `spreadsheetId` | Część URL arkusza pomiędzy `/d/` i `/edit`, bez całego adresu. |
+| `sheetName` | Nazwa zakładki zawierającej ranking. |
+| `range` | Zakres bez nagłówków, np. `B2:E`. |
+| `totalTasks` | Liczba zadań do mety/portu. Skala i pozycje dostosowują się automatycznie. |
+
+`refreshSeconds` na głównym poziomie pliku określa odświeżanie wszystkich akcji (minimum 30 sekund).
+
+Konfiguracja jest publiczna i trafia do wygenerowanego HTML. Nie wpisuj haseł ani kluczy API. Nieznane pola, powtórzone identyfikatory, zduplikowany sezon/rok i nieprawidłowe ustawienia zatrzymują budowanie.
+
+Obowiązującym źródłem jest `actions.json`. Dawne `site.config.json` i zmienne `SEASON`, `YEAR` itp. nie sterują już stroną. Do pracy nad oddzielną kopią można użyć `SITE_CONFIG=/pelna/sciezka/katalog-akcji.json`; struktura powinna być taka jak w `actions.json`. Wzór bez rzeczywistych źródeł znajduje się w `site.config.example.json`. Nie uruchamiaj kilku wdrożeń równocześnie z jednego katalogu, ponieważ korzystają z tego samego `dist/`.
+
+## Arkusze i punktacja
+
+Dla zakresu `B2:E` kolumny to:
 
 | Kolumna | Zawartość |
 | --- | --- |
-| B | Nazwa wyjazdu — puste nazwy są pomijane. |
-| C | Liczba punktów (okręgoleonów). |
+| B | Nazwa wyjazdu. Puste nazwy są pomijane. |
+| C | Punkty / okręgoleony. |
 | D | Liczba wykonanych zadań. |
-| E | Dawna kolumna pomocnicza — obecnie nie jest używana. |
+| E | Dawna kolumna pomocnicza, obecnie niewykorzystywana. |
 
-Nagłówki umieść w pierwszym wierszu. Przy innym zakresie zachowaj kolejność: nazwa, punkty, zadania. W **Udostępnij → Dostęp ogólny** ustaw **Każdy, kto ma link → Przeglądający**. Takie udostępnienie dotyczy całego pliku, a nie tylko zakładki punktacji; źródło strony powinno zawierać dane przeznaczone do publicznego odczytu.
+Przy innym zakresie zachowaj kolejność: nazwa, punkty, zadania. Nagłówki powinny być poza zakresem danych.
 
-Ranking sortuje punkty malejąco. Remis oznacza wspólne miejsce, a kolejne miejsce zwiększa się o jeden: `1, 1, 2`. Postęp jest dzielony przez `totalTasks`; pozycja grafiki pozostaje w zakresie 0–100%. Ujemne punkty są obsługiwane, puste wartości liczbowe są traktowane jako zero.
+Każdy arkusz musi być dostępny w trybie **Każdy, kto ma link → Przeglądający**. Dotyczy to całego pliku, nie tylko zakładki, więc źródło powinno zawierać dane przeznaczone do publicznego odczytu. Odczyt odbywa się przez Google Visualization, bez klucza API i bez logowania.
 
-Dane odświeżają się po otwarciu, powrocie do karty, kliknięciu przycisku oraz zgodnie z `refreshSeconds` w widocznej karcie. Google może buforować dane. Po błędzie odświeżenia strona pozostawia ostatni odczyt i pokazuje ostrzeżenie.
+Ranking jest malejący. Remisy mają to samo miejsce, następne miejsce zwiększa się o jeden (`1, 1, 2`). Postęp to liczba wykonanych zadań podzielona przez `totalTasks`, wizualnie ograniczona do 0–100%. Puste wartości liczbowe są traktowane jako zero.
 
-## Publikacja na Firebase Hosting
+Strona pobiera dane przy otwarciu, powrocie do karty, kliknięciu przycisku oraz okresowo w widocznej karcie. Google może buforować odpowiedzi. Przy błędzie odświeżania pozostaje ostatni odczyt z ostrzeżeniem.
 
-### Jednorazowe przygotowanie
+**Archiwum również czyta swoje arkusze na żywo** — nie jest zapisaną kopią punktacji. Aby zachować historyczne wyniki, pozostaw wcześniejsze arkusze bez zmian lub utwórz ich kopie i zmień źródła odpowiednich akcji.
+
+## Wdrożenie Firebase
+
+Projekt Google/Firebase pozostaje `haz2027grywalizacja`, ale główna witryna Hosting nazywa się **`grywalizacja`**, stąd adres **grywalizacja.web.app**. Nazwa projektu nie musi być taka sama jak nazwa witryny.
+
+Jednorazowo na nowym komputerze:
 
 ```sh
 npm install -g firebase-tools
 firebase login
 firebase projects:list
-firebase use --add
 ```
 
-Wybierz właściwy projekt i alias `default`. Firebase zapisze wybór lokalnie w `.firebaserc` (plik nie trafia do Git). Jeśli projekt nie istnieje, utwórz go w [Firebase Console](https://console.firebase.google.com/) lub poleceniem `firebase projects:create TWOJ_UNIKALNY_ID --display-name "Grywalizacja"`, a następnie wykonaj `firebase use --add`.
-
-Nie trzeba uruchamiać `firebase init` — gotowy `firebase.json` jest w repozytorium. Hosting publikuje wyłącznie `dist/`; pliki źródłowe, konfiguracja lokalna, `.env` i dane logowania pozostają poza katalogiem publikacji.
-
-### Wdrożenie
-
-1. Ustaw sezon, rok i arkusz w `site.config.json`.
-2. Uruchom `npm test` i sprawdź podgląd przez `npm start`.
-3. Opublikuj stronę:
+Publikacja w naszym projekcie:
 
 ```sh
-npm run deploy
-# Możesz też jawnie wskazać projekt:
-npm run deploy -- --project TWOJ_ID_PROJEKTU
+npm test
+npm run deploy -- --project haz2027grywalizacja
 ```
 
-Hook `predeploy` w `firebase.json` **zawsze buduje stronę z aktualnych ustawień**, również przy bezpośrednim `firebase deploy --only hosting`. Błąd konfiguracji zatrzymuje wdrożenie. Nie edytuj ręcznie `dist/`, bo jest odtwarzany przy każdym budowaniu.
+`firebase.json` zawiera dwie witryny:
 
-Firebase CLI wyświetli adres strony po udanym wdrożeniu. Podstawowy wariant działa na statycznym Firebase Hosting; nie używa Functions, Cloud Run ani Firestore.
+- `grywalizacja`: publikuje `dist/`, czyli najnowszą akcję i archiwum. Hook `predeploy` zawsze buduje aktualną wersję.
+- `haz2027grywalizacja`: przekierowuje stary adres na nową witrynę. Starsze `/hal/` prowadzi do HAL26, a `/akcje/<id>/` zachowuje wybraną edycję.
 
-### Zmiana sezonu przy wdrożeniu
+Nie uruchamiaj `firebase init` — konfiguracja jest w repo. Publikuj obie witryny przez `--only hosting` (tak działa `npm run deploy`). Ustawienia i źródła nie są serwowane jako osobny katalog; do sieci trafia wygenerowana strona. Pliki `.env` nie są używane.
 
-Zmień `season` w `site.config.json` lub nadpisz go zmienną środowiskową (macOS/Linux):
+Nie ma automatycznego wdrożenia przy `git push`: zmiany trzeba **wysłać do GitHub i osobno opublikować**. Dla innej organizacji/projektu utwórz własną witrynę Firebase i zmień `site` oraz przekierowania w `firebase.json` — nie publikuj przypadkiem na naszym hostingu.
 
-```sh
-SEASON=summer npm run deploy -- --project TWOJ_ID_PROJEKTU
-SEASON=winter YEAR=2028 npm run deploy -- --project TWOJ_ID_PROJEKTU
-```
+Konfiguracja akcji jest osadzona w tym samym HTML co nagłówek, a pliki JS/CSS mają nazwy zależne od zawartości. Ogranicza to mieszanie konfiguracji między wersjami z pamięci podręcznej.
 
-PowerShell: `$env:SEASON = "summer"`, potem `npm run deploy -- --project TWOJ_ID_PROJEKTU`. Po pracy usuń nadpisanie: `Remove-Item Env:SEASON`.
-
-Dostępne nadpisania: `SEASON`, `YEAR`, `SPREADSHEET_ID`, `SHEET_NAME`, `SHEET_RANGE`, `TOTAL_TASKS`, `REFRESH_SECONDS`. Najpierw wczytywany jest JSON, następnie zmienne środowiskowe. To ustawienia **budowania**, nie przełączniki w konsoli Firebase ani parametry URL. Pliki `.env` nie są automatycznie wczytywane.
-
-Dla kilku hostingów utrzymuj osobne pliki konfiguracji poza repozytorium i podawaj `SITE_CONFIG=/pelna/sciezka/ustawienia.json`. Każdy hosting może mieć inny sezon i arkusz. Nie uruchamiaj równocześnie kilku wdrożeń z tego samego katalogu, ponieważ współdzielą `dist/`.
-
-Starszy adres `/hal/` przekierowuje na `/`, gdzie zawsze wyświetla się sezon wybrany przez administratora. Nie pozwala zmienić sezonu.
-
-## Struktura projektu
+## Struktura
 
 ```text
-src/                      HTML, CSS, JavaScript i oryginalne grafiki
-scripts/build.mjs         walidacja konfiguracji i generowanie jednej wersji
-scripts/serve.mjs         lokalny serwer udostępniający wyłącznie dist/
-tests/                    testy danych, rankingu i budowania obu wariantów
-site.config.example.json  wzór ustawień dla następnego administratora
-site.config.json          Twoje lokalne ustawienia (poza Git)
-firebase.json             publikacja, nagłówki i hook budowania
-dist/                     gotowa strona (generowana, poza Git)
-ASSET-LICENSES.md          źródła grafik i wymagane oznaczenia
+actions.json               aktualny katalog akcji i źródła danych
+src/                       wspólny szablon, CSS, JS i grafiki
+scripts/build.mjs          walidacja, wybór najnowszej akcji, generowanie stron
+scripts/serve.mjs          lokalny serwer plików dist/
+tests/                     testy rankingu, katalogu, archiwum i budowania
+firebase.json              główna witryna i przekierowanie starego adresu
+redirect/                  zapasowy HTML starego hostingu
+dist/                      wygenerowana strona (poza Git)
+ASSET-LICENSES.md           źródła grafik i wymagane oznaczenia
 ```
 
-## Rozwiązywanie problemów
+## Typowe problemy
 
-- **Brak konfiguracji / błędny identyfikator:** skopiuj przykład do `site.config.json` i zastąp `WKLEJ_ID_ARKUSZA` rzeczywistym ID.
-- **Nie udało się pobrać punktacji:** sprawdź dostęp do arkusza bez logowania, nazwę zakładki i zakres. Czasem potrzebne jest ponowne odświeżenie po chwili.
-- **Zły sezon po publikacji:** sprawdź `season`, ewentualną zmienną `SEASON`, plik wskazany przez `SITE_CONFIG` i wybrany projekt Firebase. Ponów wdrożenie.
-- **Brak dostępu do Firebase:** wykonaj `firebase login --reauth` i sprawdź uprawnienia konta do projektu.
-- **Stara punktacja:** poczekaj na następny odczyt; opóźnienie może wynikać z bufora Google.
+- **Brak punktacji:** sprawdź publiczne udostępnienie arkusza, nazwę zakładki i zakres. Link do arkusza może otwierać zakładkę inną niż „Punktacja”.
+- **Zła akcja domyślna:** sprawdź rok i sezon wszystkich wpisów. W obrębie roku HAL jest nowsze niż HAZ. Nie dodawaj jeszcze akcji, która nie ma być dostępna.
+- **Stare dane:** kliknij odświeżanie, a potem odczekaj na bufor Google.
+- **Stara wersja strony:** odśwież przeglądarkę; sprawdź też, czy po `git push` wykonano wdrożenie Firebase.
+- **Brak dostępu do hostingu:** `firebase login --reauth` i weryfikacja uprawnień do projektu.
 
-Przekazując utrzymanie, zapewnij następnej osobie dostęp do organizacji GitHub, projektu Firebase i edycji arkusza oraz przekaż właściwe ustawienia wdrożenia. Sam dostęp do repozytorium nie nadaje dostępu do tych usług.
+Przy przekazywaniu utrzymania zapewnij następnej osobie dostęp do GitHub, projektu Firebase i edycji arkuszy. Dostęp do repozytorium nie nadaje uprawnień do pozostałych usług.
