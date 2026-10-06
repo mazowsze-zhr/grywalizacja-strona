@@ -1,0 +1,9 @@
+{
+  "season": "winter",
+  "year": 2027,
+  "spreadsheetId": "WKLEJ_ID_ARKUSZA",
+  "sheetName": "Punktacja",
+  "range": "B2:E",
+  "totalTasks": 12,
+  "refreshSeconds": 60
+}

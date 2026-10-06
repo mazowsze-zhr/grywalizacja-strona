@@ -1,0 +1,14 @@
+{
+  "name": "grywalizacja-strona",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Punktacja wyjazdów Mazowsze ZHR — wariant zimowy HAZ i letni HAL wybierany przy wdrożeniu.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && node scripts/serve.mjs",
+    "test": "node --test tests/*.test.js",
+    "deploy": "firebase deploy --only hosting"
+  }
+}
