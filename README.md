@@ -10,6 +10,10 @@ Obecnie:
 | --- | --- | --- |
 | HAZ27 | zimowy, narciarze | [Strona główna](https://grywalizacja.web.app/) lub [/akcje/haz27/](https://grywalizacja.web.app/akcje/haz27/) |
 | HAL26 | letni, statki | [/akcje/hal26/](https://grywalizacja.web.app/akcje/hal26/) |
+| HAZ26 | zimowy, narciarze | [/akcje/haz26/](https://grywalizacja.web.app/akcje/haz26/) |
+| HAL25 | letni, statki | [/akcje/hal25/](https://grywalizacja.web.app/akcje/hal25/) |
+| HAZ25 | zimowy, narciarze | [/akcje/haz25/](https://grywalizacja.web.app/akcje/haz25/) |
+| HAL24 | letni, statki | [/akcje/hal24/](https://grywalizacja.web.app/akcje/hal24/) |
 
 Każda akcja ma osobny arkusz, rok, sezon i liczbę zadań. Zmiana akcji otwiera jej własną stronę; konfiguracja i dane nie mieszają się między akcjami. Sezon wynika z ustawień akcji, a użytkownik wybiera edycję, nie dowolną skórkę.
 

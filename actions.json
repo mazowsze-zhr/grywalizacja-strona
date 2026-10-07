@@ -5,7 +5,7 @@
       "id": "haz27",
       "season": "winter",
       "year": 2027,
-      "spreadsheetId": "1GV7dlxBDa7KHPjcirhwnv4hlmwjuq679IrRG5_HJsSM",
+      "spreadsheetId": "1YzUIEL0916hP91oPur9O35XmVwMsMC9x1YezGCXjH4k",
       "sheetName": "Punktacja",
       "range": "B2:E",
       "totalTasks": 12
@@ -15,6 +15,42 @@
       "season": "summer",
       "year": 2026,
       "spreadsheetId": "1XgWKVQ537wVpU1Qk14TACRsFM0pQBYGVrhzCFJMfAdE",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    },
+    {
+      "id": "haz26",
+      "season": "winter",
+      "year": 2026,
+      "spreadsheetId": "1Cds4_nKAOn29qcogY_DzkyG4DGKZ_zaChKLr11refZk",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    },
+    {
+      "id": "hal25",
+      "season": "summer",
+      "year": 2025,
+      "spreadsheetId": "1WAp5Xj57qh1l74QTJ0UDx6hOly70oNQQOL38uPTCwMw",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    },
+    {
+      "id": "haz25",
+      "season": "winter",
+      "year": 2025,
+      "spreadsheetId": "1GV7dlxBDa7KHPjcirhwnv4hlmwjuq679IrRG5_HJsSM",
+      "sheetName": "Punktacja",
+      "range": "B2:E",
+      "totalTasks": 12
+    },
+    {
+      "id": "hal24",
+      "season": "summer",
+      "year": 2024,
+      "spreadsheetId": "1OKjAhsFXfQEyi-djHRdGTTYaZZpfQr05Hq4yRYm1ylw",
       "sheetName": "Punktacja",
       "range": "B2:E",
       "totalTasks": 12
